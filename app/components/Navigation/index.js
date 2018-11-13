@@ -6,30 +6,30 @@
 
 import React from 'react';
 import AppBar from '../AppBar';
+import Drawer from '../Drawer';
 
 import styles from './styles.css';
 // import { select } from 'redux-saga/effects';
 
-function Navigation({ topics, selectTopic, toggleDrawer }) {
-  const topicNodes = topics.map(t => (
-    <div
-      key={t.name}
-      onClick={() => selectTopic(t)}
-    >
-    {t.name}
-    </div>
-  ));
+function Navigation({ topics, selectTopic, toggleDrawer, isDrawerOpen }) {
   return (
     <div className={styles.navigation}>
       <AppBar
         toggleDrawer={toggleDrawer}
       />
-      {topicNodes}
+      <Drawer
+        items={topics}
+        selectItem={selectTopic}
+        itemLabelAttr="name"
+        itemKeyAttr="name"
+        isDrawerOpen={isDrawerOpen}
+      />
     </div>
   );
 }
 
 Navigation.propTypes = {
+  isDrawerOpen: React.PropTypes.bool.isRequired,
   toggleDrawer: React.PropTypes.func.isRequired,
   topics: React.PropTypes.arrayOf(
     React.PropTypes.shape({
