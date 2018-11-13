@@ -8,11 +8,20 @@ import React from 'react';
 
 
 import styles from './styles.css';
+// import { select } from 'redux-saga/effects';
 
-function Navigation({ topics }) {
+function Navigation({ topics, selectTopic }) {
+  const topicNodes = topics.map(t => (
+    <div
+      key={t.name}
+      onClick={() => selectTopic(t)}
+    >
+    {t.name}
+    </div>
+  ));
   return (
     <div className={styles.navigation}>
-      We have {topics.length} topics in the Navigation component.
+      {topicNodes}
     </div>
   );
 }
@@ -24,6 +33,7 @@ Navigation.propTypes = {
       description: React.PropTypes.string.isRequired,
     })
   ).isRequired,
+  selectTopic: React.PropTypes.func.isRequired,
 };
 
 export default Navigation;
