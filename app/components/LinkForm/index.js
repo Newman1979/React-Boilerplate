@@ -7,10 +7,49 @@
 import React from 'react';
 
 import styles from './styles.css';
-import classNames from 'classnames';
+import TextInput from '../TextInput';
 
 class LinkForm extends React.Component { // eslint-disable-line react/prefer-stateless-function
-  state = {};
+  static propTypes = {
+    addLink: React.PropTypes.func.isRequired,
+    topicName: React.PropTypes.string.isRequired,
+    addLinkCancelled: React.PropTypes.func.isRequired,
+  }
+
+  state = {
+    urlError: '',
+    descriptionError: '',
+  };
+
+  onAdd = () => {
+    const url = this.url.value();
+    const description = this.description.value();
+    let urlError = null;
+    let descriptionError = null;
+
+    if (!url.match(/[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/)) {
+      urlError = 'Please provide a valid URL';
+    }
+
+    if (!description) {
+      descriptionError = 'Please provide a valid description';
+    }
+
+    this.setState({
+      urlError,
+      descriptionError,
+    });
+
+    if (urlError || descriptionError) {
+      return;
+    }
+
+    this.props.addLink({
+      url,
+      description,
+      topicName: this.props.topicName,
+    });
+  }
 
   render() {
     return (
@@ -22,18 +61,18 @@ class LinkForm extends React.Component { // eslint-disable-line react/prefer-sta
             Add a link
           </div>
 
-          <input
-            className={classNames(styles.input, { [styles.inputError]: this.state.errorText })}
+          <TextInput
             placeholder="URL"
-            ref={(f) => { this.urlField = f; }}
-            type="text"
+            className={styles.input}
+            errorText={this.state.urlError}
+            ref={(f) => (this.url = f)}
           />
 
-          <input
-            className={classNames(styles.input, { [styles.inputError]: this.state.errorText })}
+          <TextInput
             placeholder="Description"
-            ref={(f) => { this.descriptionField = f; }}
-            type="text"
+            className={styles.input}
+            errorText={this.state.descriptionError}
+            ref={(f) => (this.description = f)}
           />
 
           <div
@@ -41,15 +80,15 @@ class LinkForm extends React.Component { // eslint-disable-line react/prefer-sta
           >
             <div
               className={styles.button}
-              onClick={this.props.cancelLogin}
+              onClick={this.props.addLinkCancelled}
             >
               cancel
             </div>
             <div
               className={styles.button}
-              onClick={this.login}
+              onClick={this.onAdd}
             >
-              login
+              Add
             </div>
           </div>
         </div>
